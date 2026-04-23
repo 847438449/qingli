@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 
 
@@ -27,6 +28,13 @@ class DeletionMode(str, Enum):
     MANUAL_CONFIRM = "建议人工确认"
 
 
+class ScanItemType(str, Enum):
+    """扫描项类型。"""
+
+    FILE = "file"
+    FOLDER = "folder"
+
+
 @dataclass(slots=True)
 class CleanupItem:
     """单个待清理项。"""
@@ -39,10 +47,25 @@ class CleanupItem:
 
 
 @dataclass(slots=True)
+class LargeScanItem:
+    """大文件/大文件夹扫描结果项。"""
+
+    item_type: ScanItemType
+    name: str
+    path: str
+    size_bytes: int
+    modified_at: datetime
+    file_count: int | None = None
+    extension: str = ""
+    is_dev_residue: bool = False
+
+
+@dataclass(slots=True)
 class DeleteResult:
     """删除结果。"""
 
-    item: CleanupItem
+    name: str
+    path: str
     success: bool
     freed_bytes: int = 0
     error: str | None = None
